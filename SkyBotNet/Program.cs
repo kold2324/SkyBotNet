@@ -53,6 +53,8 @@ namespace SkyBotNet
 
             await client.ConnectAsync();
             await Task.Delay(-1);
+
+            CommandBotStatus commandBot = new CommandBotStatus();
         }
 
         static void GetConfig(out string token, out string prefix)
