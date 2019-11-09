@@ -10,6 +10,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using SkyBotNet.Settings;
+using SkyBotNet.Commands;
 
 namespace SkyBotNet
 {
@@ -48,7 +49,7 @@ namespace SkyBotNet
                 Timeout = TimeSpan.FromMinutes(2)
             });
 
-            //commands.RegisterCommands();
+            commands.RegisterCommands<CommandBotStatus>();
 
             await client.ConnectAsync();
             await Task.Delay(-1);
