@@ -18,14 +18,45 @@ namespace SkyBotNet
         static string TOKEN;
         static string Prefix;
 
-        static void Main(string[] args)
-        {
+        static DiscordClient client;
+        static CommandsNextModule commands;
+        static InteractivityModule interactivity;
 
+        static void Main(string[] args) => MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
+
+        static async Task MainAsync(string[] args)
+        {
+            GetConfig(out TOKEN, out Prefix);
+
+            client = new DiscordClient(new DiscordConfiguration
+            {
+                Token = TOKEN,
+                TokenType = TokenType.Bot,
+                UseInternalLogHandler = true,
+                LogLevel = LogLevel.Debug
+            });
+
+            commands = client.UseCommandsNext(new CommandsNextConfiguration
+            {
+                StringPrefix = Prefix
+            });
+
+            interactivity = client.UseInteractivity(new InteractivityConfiguration
+            {
+                PaginationBehaviour = TimeoutBehaviour.Ignore,
+                PaginationTimeout = TimeSpan.FromMinutes(5),
+                Timeout = TimeSpan.FromMinutes(2)
+            });
+
+            //commands.RegisterCommands();
+
+            await client.ConnectAsync();
+            await Task.Delay(-1);
         }
 
         static void GetConfig(out string token, out string prefix)
         {
-            string path = $@"{Path.GetFileName(Assembly.GetExecutingAssembly().Location)}\config.json";
+            string path = $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\config.json";
             string json = "";
 
             using (StreamReader reader = new StreamReader(path))
